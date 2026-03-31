@@ -110,11 +110,21 @@ button:disabled {
 }
 
 
+
 .danger {
-  background: #ff2d2d;
+  background: #ff1a1a;
   color: #fff;
-  box-shadow: 0 0 0 0 #ff2d2d;
+  font-weight: bold;
+  font-size: 1.25rem;
+  padding: 1rem 2.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 0 0 #ff1a1a;
   animation: sos-pulse 1.2s infinite alternate;
+  transition: transform 0.1s;
+}
+
+.danger:active {
+  transform: scale(0.97);
 }
 
 @keyframes sos-pulse {
