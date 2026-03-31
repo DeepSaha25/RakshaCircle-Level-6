@@ -245,6 +245,9 @@ const SubmissionMvp = () => {
             <button className="primary" type="submit" disabled={isBusy || !walletAddress}>
               Save Profile
             </button>
+            <p className="muted" style={{ fontSize: '0.92em', marginTop: '0.5em' }}>
+              <strong>Privacy:</strong> Your name and wallet address are only used for emergency coordination. No sensitive data is shared publicly. You can delete your profile at any time.
+            </p>
             {isBusy && (
               <div style={{
                 position: 'absolute',
