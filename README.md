@@ -37,6 +37,8 @@ Below is a summary table of user feedback collected during the 6-user validation
 | Mohan Kotwala            | mohan.kotwala19@gmail.com   | GAICSNTB2T4KCMZZPUW5TCLX3NFOOUYDREJYUO6NYFJBIHVCYBMXXITC         | Improve error message on wallet connection failure.          | dcdfaee   |
 | Priyanka Singh           | priyanka.singh03@gmail.com  | GD5X7JWSLSLWNMUU37Q3S3CAB34XN2UIOJ5HMLKQ5ABEBITFQU7MLRCB         | Add privacy note to profile creation page.                  | 6f3c00f   |
  
+**Full feedback sheet:** [Google Sheets Feedback Responses](https://docs.google.com/spreadsheets/d/1XqvaP9YFqiYNoTI3Z2BpzHsEh9QvrXPnfkscg_O1m3g/edit?usp=sharing)
+ 
 ## Quick Start
 
 ### Prerequisites
