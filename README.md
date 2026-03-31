@@ -311,15 +311,16 @@ MIT License - See LICENSE file
 - **Freighter Wallet**: https://freighter.app/
 - **Testnet Lab**: https://lab.stellar.org/
 
-## Contact & Support
 
-For deployment questions or technical issues:
-1. Check [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md) for troubleshooting
-2. Check [DEPLOYMENT.md](DEPLOYMENT.md) for API docs
-3. Review [ARCHITECTURE.md](ARCHITECTURE.md) for design details
+## User Feedback Response Sheet
 
----
+Below is a summary table of user feedback collected during the 6-user validation phase. Each row represents a real test user, their feedback, and the commit ID where changes were made in response.
 
-**Status**: ✅ MVP Complete & Tested  
-**Last Updated**: March 31, 2026  
-**Version**: 1.0.0-MVP
+| User Name                | User Email                  | User Wallet Address                                              | User Feedback                                              | Commit ID |
+|--------------------------|-----------------------------|------------------------------------------------------------------|------------------------------------------------------------|-----------|
+| Anshuman                 | anshuman.92@gmail.com       | GDMB6R3BT2L2RA3NBHAYSC3PWPCFLQIJW6SV6SXKNXAM5TWV6ZYDRQUC         | The SOS button color is not prominent enough.               | 25a657c   |
+| Khushi Yadav             | khushi.yadav07@gmail.com    | GAX22KE4S6AYUOGVMWLPSK3YOFOJ6Q66KZFQOTBRCGQDO4IICEX6NQ4L         | Add a tooltip to the Trusted Contacts input.                | 160bc1e   |
+| Aryan Rathore            | aryan.rathore21@gmail.com   | GCEDE4E445YZTTMGPW4VOMFVU4RNU5IP2OXC5JHHV2AWQETFGFYAOGYP         | Dashboard should show last 5 SOS events.                    | c12b91b   |
+| Sukhwinder Singh Jassi   | sukhwinder.sj88@gmail.com   | GD7VF3SFQQ7QZ6VL6KISIHDZFJXSV6L2GCXK7GJMC72NEKIF7ASVMT6Z         | Add loading spinner on profile form submit.                 | 7f5c568   |
+| Mohan Kotwala            | mohan.kotwala19@gmail.com   | GAICSNTB2T4KCMZZPUW5TCLX3NFOOUYDREJYUO6NYFJBIHVCYBMXXITC         | Improve error message on wallet connection failure.          | dcdfaee   |
+| Priyanka Singh           | priyanka.singh03@gmail.com  | GD5X7JWSLSLWNMUU37Q3S3CAB34XN2UIOJ5HMLKQ5ABEBITFQU7MLRCB         | Add privacy note to profile creation page.                  | 6f3c00f   |
