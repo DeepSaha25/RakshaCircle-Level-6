@@ -109,9 +109,23 @@ button:disabled {
   color: #e2e8f0;
 }
 
+
 .danger {
-  background: #ef4444;
+  background: #ff2d2d;
   color: #fff;
+  box-shadow: 0 0 0 0 #ff2d2d;
+  animation: sos-pulse 1.2s infinite alternate;
+}
+
+@keyframes sos-pulse {
+  0% {
+    box-shadow: 0 0 0 0 #ff2d2d44;
+    filter: brightness(1.1);
+  }
+  100% {
+    box-shadow: 0 0 16px 8px #ff2d2d55;
+    filter: brightness(1.25);
+  }
 }
 
 .contact-row {
