@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: rakshamarg-backend
+    name: rakshacircle-backend
     runtime: node
-    rootDir: .
+    rootDir: backend
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node server.js
     autoDeploy: true
     healthCheckPath: /health
     envVars:
@@ -13,28 +13,6 @@ services:
       - key: APP_API_KEY
         sync: false
       - key: GOOGLE_MAPS_API_KEY
-        sync: false
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: NIRBHAYA_SERVICE_URL
-        sync: false
-
-  - type: web
-    name: rakshamarg-chatbot
-    runtime: python
-    rootDir: nirbhaya_bot
-    buildCommand: python -m pip install --upgrade pip setuptools wheel && python -m pip install --no-cache-dir --retries 10 --timeout 120 -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-    autoDeploy: true
-    healthCheckPath: /health
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.11
-      - key: PIP_DEFAULT_TIMEOUT
-        value: 120
-      - key: PIP_DISABLE_PIP_VERSION_CHECK
-        value: 1
-      - key: API_KEY
         sync: false
       - key: GEMINI_API_KEY
         sync: false
