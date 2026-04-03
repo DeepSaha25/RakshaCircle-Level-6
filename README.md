@@ -222,8 +222,18 @@ The repository now includes the first production-readiness layer for Level 6:
 - Live metrics and monitoring endpoints on the backend
 - Indexed SOS, profile, and contact records
 - A production dashboard in the frontend
+- A demo seeding endpoint that generates 30+ realistic verified users, contacts, and SOS events
 - A fee sponsorship path in the SOS flow for gasless-transaction readiness
 - A dedicated user guide and security checklist under [docs/](docs)
+
+### Demo Scenario
+
+Open the submission dashboard and click **Load 30+ Demo Users** to populate the app with a realistic test dataset. The seeded scenario includes:
+
+- 30 verified users
+- Multiple trusted contacts per user
+- Historical SOS and check-in events across the last 30 days
+- A live production-readiness dashboard with metrics, monitoring, indexing, and security status
 
 ### Required Submission Assets
 
@@ -236,6 +246,10 @@ Replace the placeholders below with the final production links before monthly su
 - Community contribution post: `https://x.com/your-post-link`
 - Advanced feature proof: fee sponsorship in the SOS flow plus the [production readiness summary](docs/PRODUCTION_READINESS.md)
 - Data indexing approach: [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md)
+
+Backend demo seeding endpoint:
+
+- `POST /api/v1/raksha/seed-demo` with `{"users": 30}`
 
 ### User Onboarding and Feedback Loop
 

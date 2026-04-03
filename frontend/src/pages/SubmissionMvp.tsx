@@ -1,4 +1,5 @@
 import { FormEvent, useMemo, useState } from 'react';
+import ProductionReadinessPanel from '@/components/ProductionReadinessPanel';
 import {
   acknowledgeEvent,
   getEvents,
@@ -6,6 +7,7 @@ import {
   getTrustedContacts,
   saveProfile,
   saveTrustedContacts,
+  seedDemoData,
   triggerSos,
   TrustedContact,
   SosEvent,
@@ -35,8 +37,9 @@ const SubmissionMvp = () => {
   const [events, setEvents] = useState<SosEvent[]>([]);
   const [ackWallet, setAckWallet] = useState('');
   const [ackNote, setAckNote] = useState('I received your alert and I am on the way.');
-  const [statusMessage, setStatusMessage] = useState('Connect wallet to begin.');
+  const [statusMessage, setStatusMessage] = useState('Connect wallet or load the demo scenario to begin.');
   const [isBusy, setIsBusy] = useState(false);
+  const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
 
   const canUseApi = useMemo(() => walletAddress.trim().length > 0, [walletAddress]);
 
@@ -51,30 +54,6 @@ const SubmissionMvp = () => {
     } finally {
       setIsBusy(false);
     }
-  };
-
-  const handleConnectWallet = async () => {
-    await withBusy(async () => {
-      if (window.freighterApi?.getPublicKey) {
-        try {
-          const publicKey = await window.freighterApi.getPublicKey();
-          setWalletAddress(publicKey);
-          setAckWallet(publicKey);
-          setMessage(`Wallet connected: ${shortenWallet(publicKey)}`);
-          await loadAll(publicKey);
-          return;
-        } catch (err) {
-          setMessage('Wallet connection failed: Please ensure you have the Freighter extension installed, are logged in, and have approved the connection. Make sure your network is set to Stellar Testnet. If you continue to have issues, try refreshing the page, reinstalling Freighter, or check for browser extension conflicts. For help, see the FAQ in the README.', true);
-          return;
-        }
-      }
-
-      const demoWallet = 'GDEMOUSER1234567890SUBMISSIONREADYWALLET';
-      setWalletAddress(demoWallet);
-      setAckWallet(demoWallet);
-      setMessage('Freighter not found, connected with demo wallet for submission testing.');
-      await loadAll(demoWallet);
-    });
   };
 
   const loadAll = async (wallet: string) => {
@@ -102,6 +81,45 @@ const SubmissionMvp = () => {
     }
   };
 
+  const handleConnectWallet = async () => {
+    await withBusy(async () => {
+      if (window.freighterApi?.getPublicKey) {
+        try {
+          const publicKey = await window.freighterApi.getPublicKey();
+          setWalletAddress(publicKey);
+          setAckWallet(publicKey);
+          setMessage(`Wallet connected: ${shortenWallet(publicKey)}`);
+          await loadAll(publicKey);
+          return;
+        } catch {
+          setMessage('Wallet connection failed: Please ensure Freighter is installed, signed in, and set to Stellar Testnet.', true);
+          return;
+        }
+      }
+
+      const demoWallet = 'GDEMOUSER1234567890SUBMISSIONREADYWALLETEXAMPLE000000';
+      setWalletAddress(demoWallet);
+      setAckWallet(demoWallet);
+      setMessage('Freighter not found, connected with demo wallet for submission testing.');
+      await loadAll(demoWallet);
+    });
+  };
+
+  const handleLoadDemoScenario = async () => {
+    await withBusy(async () => {
+      const demo = await seedDemoData(30);
+      setWalletAddress(demo.primaryWallet);
+      setAckWallet(demo.primaryWallet);
+      setContacts((current) => current.length > 0 ? current : [
+        { ...EMPTY_CONTACT, id: 'contact-1' },
+        { ...EMPTY_CONTACT, id: 'contact-2' },
+      ]);
+      await loadAll(demo.primaryWallet);
+      setDashboardRefreshKey((current) => current + 1);
+      setMessage(`Loaded ${demo.summary.users} demo users, ${demo.summary.events} events, and ${demo.summary.contacts} contacts.`);
+    });
+  };
+
   const handleSaveProfile = async (event: FormEvent) => {
     event.preventDefault();
     if (!canUseApi) {
@@ -112,6 +130,7 @@ const SubmissionMvp = () => {
     await withBusy(async () => {
       await saveProfile(walletAddress, profileName);
       setMessage('Profile saved successfully.');
+      setDashboardRefreshKey((current) => current + 1);
     });
   };
 
@@ -135,6 +154,7 @@ const SubmissionMvp = () => {
       const cleaned = contacts.filter((item) => item.name?.trim());
       await saveTrustedContacts(walletAddress, cleaned);
       setMessage(`Saved ${cleaned.length} trusted contacts.`);
+      setDashboardRefreshKey((current) => current + 1);
     });
   };
 
@@ -156,6 +176,7 @@ const SubmissionMvp = () => {
       setEvents(latest.events);
       setMessage('SOS triggered and recorded successfully.');
       setContextText('');
+      setDashboardRefreshKey((current) => current + 1);
     });
   };
 
@@ -170,6 +191,7 @@ const SubmissionMvp = () => {
       const latest = await getEvents(walletAddress);
       setEvents(latest.events);
       setMessage('Acknowledgment added.');
+      setDashboardRefreshKey((current) => current + 1);
     });
   };
 
@@ -220,9 +242,12 @@ const SubmissionMvp = () => {
           Lean end-to-end flow: wallet connect, profile setup, trusted circle, SOS trigger, acknowledgment,
           and tamper-proof style event history.
         </p>
-        <div className="wallet-row">
-          <button className="primary" onClick={handleConnectWallet} disabled={isBusy}>
+        <div className="wallet-row" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button className="primary" onClick={handleConnectWallet} disabled={isBusy} type="button">
             Connect Freighter Wallet
+          </button>
+          <button className="ghost" onClick={handleLoadDemoScenario} disabled={isBusy} type="button">
+            Load 30+ Demo Users
           </button>
           <span>{walletAddress ? shortenWallet(walletAddress) : 'No wallet connected'}</span>
         </div>
@@ -282,29 +307,12 @@ const SubmissionMvp = () => {
                   onChange={(event) => handleContactChange(index, 'name', event.target.value)}
                   placeholder="Contact name"
                 />
-                <div style={{ position: 'relative', width: '100%' }}>
-                  <input
-                    value={contact.walletAddress || ''}
-                    onChange={(event) => handleContactChange(index, 'walletAddress', event.target.value)}
-                    placeholder="Contact wallet"
-                    aria-label="Contact wallet address"
-                  />
-                  <span
-                    title="Enter the full Stellar wallet address of your trusted contact."
-                    style={{
-                      position: 'absolute',
-                      right: 8,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      color: '#38bdf8',
-                      cursor: 'pointer',
-                      fontSize: '1.1em',
-                      userSelect: 'none',
-                    }}
-                  >
-                    ℹ️
-                  </span>
-                </div>
+                <input
+                  value={contact.walletAddress || ''}
+                  onChange={(event) => handleContactChange(index, 'walletAddress', event.target.value)}
+                  placeholder="Contact wallet"
+                  aria-label="Contact wallet address"
+                />
                 <input
                   value={contact.phone || ''}
                   onChange={(event) => handleContactChange(index, 'phone', event.target.value)}
@@ -321,27 +329,12 @@ const SubmissionMvp = () => {
               </button>
             </div>
           </div>
-                        <input
-                          value={contact.walletAddress || ''}
-                          onChange={(event) => handleContactChange(index, 'walletAddress', event.target.value)}
-                          placeholder="Contact wallet"
-                          aria-label="Contact wallet address"
-                          style={{ paddingRight: '2rem' }}
-                        />
-                        <span
-                          style={{
-                            position: 'absolute',
-                            right: 4,
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            cursor: 'pointer',
-                            color: '#888',
-                            fontSize: '1.1em',
-                          }}
-                          title="Enter the Stellar wallet address of your trusted contact. They will receive your SOS alerts."
-                        >
-                          ℹ️
-                        </span>
+        </article>
+
+        <article className="submission-card">
+          <h2>3. SOS Trigger</h2>
+          <div className="stack">
+            <label>
               Event Type
               <select value={eventType} onChange={(event) => setEventType(event.target.value)}>
                 <option value="SOS">SOS</option>
@@ -387,7 +380,6 @@ const SubmissionMvp = () => {
             <textarea value={ackNote} onChange={(event) => setAckNote(event.target.value)} />
             <div className="events-list">
               {events.length === 0 && <p className="muted">No alerts yet.</p>}
-              {/* Show only the last 5 events, most recent first */}
               {events.slice(0, 5).map((item) => (
                 <div key={item.id} className="event-card">
                   <p>
@@ -406,6 +398,8 @@ const SubmissionMvp = () => {
           </div>
         </article>
       </section>
+
+      <ProductionReadinessPanel walletAddress={walletAddress} refreshToken={dashboardRefreshKey} />
     </main>
   );
 };

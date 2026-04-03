@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getProductionReadiness, ProductionReadinessResponse } from '@/services/rakshaMvp';
 
 type Props = {
   walletAddress?: string;
+  refreshToken?: number;
 };
 
 const initialState: ProductionReadinessResponse | null = null;
@@ -19,40 +20,37 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat('en-US').format(value);
 }
 
-export default function ProductionReadinessPanel({ walletAddress }: Props) {
+export default function ProductionReadinessPanel({ walletAddress, refreshToken = 0 }: Props) {
   const [readiness, setReadiness] = useState<ProductionReadinessResponse | null>(initialState);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [manualRefreshCounter, setManualRefreshCounter] = useState(0);
+
+  const loadReadiness = useCallback(async () => {
+    try {
+      const result = await getProductionReadiness();
+      setReadiness(result);
+      setError('');
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : 'Failed to load production readiness');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let mounted = true;
-
-    const loadReadiness = async () => {
-      try {
-        const result = await getProductionReadiness();
-        if (mounted) {
-          setReadiness(result);
-          setError('');
-        }
-      } catch (loadError) {
-        if (mounted) {
-          setError(loadError instanceof Error ? loadError.message : 'Failed to load production readiness');
-        }
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
+    const refreshDashboard = async () => {
+      setIsLoading(true);
+      await loadReadiness();
     };
 
-    loadReadiness();
-    const interval = window.setInterval(loadReadiness, 30000);
+    refreshDashboard();
+    const interval = window.setInterval(refreshDashboard, 30000);
 
     return () => {
-      mounted = false;
       window.clearInterval(interval);
     };
-  }, []);
+  }, [loadReadiness, manualRefreshCounter, refreshToken]);
 
   return (
     <section className="submission-card readiness-card">
@@ -61,7 +59,7 @@ export default function ProductionReadinessPanel({ walletAddress }: Props) {
           <p className="eyebrow">Level 6</p>
           <h2>Production Readiness</h2>
         </div>
-        <button className="ghost" type="button" onClick={() => window.location.reload()}>
+        <button className="ghost" type="button" onClick={() => setManualRefreshCounter((current) => current + 1)}>
           Refresh dashboard
         </button>
       </div>

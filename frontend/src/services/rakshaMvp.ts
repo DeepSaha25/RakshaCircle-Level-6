@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '@/config';
 
-const baseUrl = API_BASE_URL || 'http://localhost:8000';
+const baseUrl = API_BASE_URL || 'http://localhost:3000';
 const apiPrefix = `${baseUrl}/api/v1/raksha`;
 
 export type TrustedContact = {
@@ -8,6 +8,7 @@ export type TrustedContact = {
   name: string;
   walletAddress?: string;
   phone?: string;
+  createdAt?: string;
 };
 
 export type SosEvent = {
@@ -17,9 +18,14 @@ export type SosEvent = {
   contextHash: string;
   locationHint: string;
   status: 'active' | 'acknowledged';
-  };
-};
   timestamp: string;
+  acknowledgments: Array<{
+    contactWallet: string;
+    note: string;
+    timestamp: string;
+  }>;
+};
+
 export type ProductionReadinessResponse = {
   generatedAt: string;
   metrics: {
@@ -79,11 +85,18 @@ export type ProductionReadinessResponse = {
     evidence: string;
   }>;
 };
-  acknowledgments: Array<{
-    contactWallet: string;
-    note: string;
-    timestamp: string;
-  }>;
+
+export type DemoSeedResponse = {
+  message: string;
+  primaryWallet: string;
+  summary: {
+    users: number;
+    contacts: number;
+    events: number;
+    acknowledgedEvents: number;
+    activeUsers24h: number;
+  };
+  metrics: ProductionReadinessResponse['metrics'];
 };
 
 async function parseResponse<T>(response: Response): Promise<T> {
@@ -166,4 +179,14 @@ export async function getEvents(walletAddress: string) {
 export async function getProductionReadiness() {
   const response = await fetch(`${apiPrefix}/production-readiness`);
   return parseResponse<ProductionReadinessResponse>(response);
+}
+
+export async function seedDemoData(users = 30) {
+  const response = await fetch(`${apiPrefix}/seed-demo`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ users }),
+  });
+
+  return parseResponse<DemoSeedResponse>(response);
 }

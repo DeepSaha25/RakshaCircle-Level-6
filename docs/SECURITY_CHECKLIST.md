@@ -10,6 +10,7 @@
 - Soroban blockchain status exposed in the API.
 - Production monitoring snapshot with request tracing.
 - Metrics and indexing endpoints for operational review.
+- Demo seeding is gated behind `ENABLE_DEMO_SEED=true` in production.
 
 ## Verification Steps
 

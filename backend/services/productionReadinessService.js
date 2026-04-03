@@ -29,8 +29,15 @@ class ProductionReadinessService {
         this.lastActivityAt = null;
     }
 
-    recordActivity(type, walletAddress, details = {}) {
-        const timestamp = new Date().toISOString();
+    reset() {
+        this.profiles.clear();
+        this.contacts.clear();
+        this.events.clear();
+        this.activityLog = [];
+        this.lastActivityAt = null;
+    }
+
+    recordActivity(type, walletAddress, details = {}, timestamp = new Date().toISOString()) {
         this.lastActivityAt = timestamp;
 
         this.activityLog.unshift({
@@ -51,7 +58,7 @@ class ProductionReadinessService {
         }
 
         this.profiles.set(profile.walletAddress, { ...profile });
-        this.recordActivity('profile_saved', profile.walletAddress, { name: profile.name });
+        this.recordActivity('profile_saved', profile.walletAddress, { name: profile.name }, profile.updatedAt || profile.createdAt);
     }
 
     recordContacts(walletAddress, contacts) {
@@ -72,7 +79,7 @@ class ProductionReadinessService {
         this.recordActivity('sos_triggered', event.walletAddress, {
             eventId: event.id,
             eventType: event.eventType
-        });
+        }, event.timestamp);
     }
 
     recordAcknowledgment(eventId, acknowledgment) {
@@ -84,7 +91,79 @@ class ProductionReadinessService {
         this.recordActivity('acknowledged', event.walletAddress, {
             eventId,
             contactWallet: acknowledgment?.contactWallet || ''
-        });
+        }, acknowledgment?.timestamp || event.timestamp);
+    }
+
+    seedDemoData(seedData = {}) {
+        this.reset();
+
+        const profiles = Array.isArray(seedData.profiles) ? seedData.profiles : [];
+        const contactsByWallet = seedData.contactsByWallet || {};
+        const events = Array.isArray(seedData.events) ? seedData.events : [];
+        const activities = [];
+
+        for (const profile of profiles) {
+            if (!profile?.walletAddress) {
+                continue;
+            }
+
+            this.profiles.set(profile.walletAddress, { ...profile });
+            activities.push({
+                type: 'profile_saved',
+                walletAddress: profile.walletAddress,
+                timestamp: profile.updatedAt || profile.createdAt || new Date().toISOString(),
+                details: { name: profile.name }
+            });
+        }
+
+        for (const [walletAddress, contacts] of Object.entries(contactsByWallet)) {
+            this.contacts.set(walletAddress, Array.isArray(contacts) ? [...contacts] : []);
+            activities.push({
+                type: 'contacts_saved',
+                walletAddress,
+                timestamp: contacts?.[0]?.createdAt || profiles.find((profile) => profile.walletAddress === walletAddress)?.updatedAt || new Date().toISOString(),
+                details: { contactCount: Array.isArray(contacts) ? contacts.length : 0 }
+            });
+        }
+
+        for (const event of events) {
+            if (!event?.id || !event.walletAddress) {
+                continue;
+            }
+
+            const normalizedEvent = {
+                ...event,
+                acknowledgments: Array.isArray(event.acknowledgments) ? [...event.acknowledgments] : []
+            };
+
+            this.events.set(normalizedEvent.id, normalizedEvent);
+            activities.push({
+                type: 'sos_triggered',
+                walletAddress: normalizedEvent.walletAddress,
+                timestamp: normalizedEvent.timestamp,
+                details: {
+                    eventId: normalizedEvent.id,
+                    eventType: normalizedEvent.eventType
+                }
+            });
+
+            for (const acknowledgment of normalizedEvent.acknowledgments) {
+                activities.push({
+                    type: 'acknowledged',
+                    walletAddress: normalizedEvent.walletAddress,
+                    timestamp: acknowledgment.timestamp || normalizedEvent.timestamp,
+                    details: {
+                        eventId: normalizedEvent.id,
+                        contactWallet: acknowledgment.contactWallet || ''
+                    }
+                });
+            }
+        }
+
+        activities.sort((left, right) => new Date(right.timestamp).getTime() - new Date(left.timestamp).getTime());
+        this.activityLog = activities.slice(0, 50);
+        this.lastActivityAt = this.activityLog[0]?.timestamp || null;
+        return this.getMetrics();
     }
 
     hasRecentActivity(walletAddress, cutoffTimestamp) {
@@ -97,7 +176,10 @@ class ProductionReadinessService {
             return true;
         }
 
-        const contactActivity = contacts.length > 0 && this.lastActivityAt ? toTimestamp(this.lastActivityAt) >= cutoffTimestamp : false;
+        const contactActivity = contacts.some((contact) => {
+            const contactTimestamp = toTimestamp(contact?.updatedAt || contact?.createdAt) || 0;
+            return contactTimestamp >= cutoffTimestamp;
+        });
         if (contactActivity) {
             return true;
         }

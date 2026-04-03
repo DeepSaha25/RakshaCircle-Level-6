@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'crypto';
 import sorobanService from '../../services/sorobanService.js';
+import { generateDemoScenario } from '../../services/demoDataService.js';
 import productionReadinessService from '../../services/productionReadinessService.js';
 
 const profiles = new Map();
@@ -24,7 +25,60 @@ function hashContext(value = '') {
     return createHash('sha256').update(value).digest('hex');
 }
 
+function clearApplicationState() {
+    profiles.clear();
+    trustedContacts.clear();
+    userEvents.clear();
+    eventsById.clear();
+    productionReadinessService.reset();
+}
+
+function seedStateFromScenario(scenario) {
+    clearApplicationState();
+
+    for (const profile of scenario.profiles) {
+        profiles.set(profile.walletAddress, { ...profile });
+    }
+
+    for (const [walletAddress, contacts] of Object.entries(scenario.contactsByWallet)) {
+        trustedContacts.set(walletAddress, contacts.map((contact) => ({ ...contact })));
+    }
+
+    for (const event of scenario.events) {
+        const walletEvents = getEventsForUser(event.walletAddress);
+        const normalizedEvent = {
+            ...event,
+            acknowledgments: event.acknowledgments.map((acknowledgment) => ({ ...acknowledgment }))
+        };
+
+        walletEvents.push(normalizedEvent);
+        eventsById.set(normalizedEvent.id, normalizedEvent);
+    }
+
+    productionReadinessService.seedDemoData(scenario);
+}
+
 export default async function rakshaRoutes(fastify) {
+    fastify.post('/seed-demo', async (request, reply) => {
+        if (process.env.NODE_ENV === 'production' && process.env.ENABLE_DEMO_SEED !== 'true') {
+            return reply.code(403).send({
+                error: 'Forbidden',
+                message: 'Demo seeding is disabled in production'
+            });
+        }
+
+        const requestedUsers = Number(request.body?.users || request.query?.users || 30);
+        const scenario = generateDemoScenario(requestedUsers);
+        seedStateFromScenario(scenario);
+
+        return {
+            message: 'Demo data seeded successfully',
+            primaryWallet: scenario.primaryWallet,
+            summary: scenario.summary,
+            metrics: productionReadinessService.getMetrics()
+        };
+    });
+
     fastify.post('/profile', async (request, reply) => {
         const { walletAddress, name } = request.body || {};
 
@@ -82,6 +136,7 @@ export default async function rakshaRoutes(fastify) {
             });
         }
 
+        const now = new Date().toISOString();
         const validContacts = contacts
             .filter((item) => item && item.name)
             .slice(0, 10)
@@ -89,7 +144,8 @@ export default async function rakshaRoutes(fastify) {
                 id: item.id || `contact-${index + 1}`,
                 name: String(item.name).trim(),
                 walletAddress: item.walletAddress ? normalizeWallet(item.walletAddress) : '',
-                phone: item.phone ? String(item.phone).trim() : ''
+                phone: item.phone ? String(item.phone).trim() : '',
+                createdAt: item.createdAt || now
             }));
 
         const normalizedWallet = normalizeWallet(walletAddress);
