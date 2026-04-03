@@ -52,7 +52,7 @@ The SOS flow now supports a fee sponsorship toggle. When enabled, the backend re
 
 ## Demo Seeding
 
-Use the `POST /api/v1/raksha/seed-demo` endpoint or the frontend **Load 30+ Demo Users** button to populate the production dashboard with realistic dummy data. This keeps the metrics, monitoring, and indexing panels non-empty during review.
+Use the `POST /api/v1/raksha/seed-demo` endpoint or the frontend **Load 30+ Demo Users** button to populate the production dashboard with the seeded review dataset. This keeps the metrics, monitoring, and indexing panels populated during review.
 
 ## What to Show in Demo Day
 

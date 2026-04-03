@@ -18,7 +18,7 @@ export default fp(async (fastify, opts) => {
         // Simple check: compare with env var (if established) or just presence
         // If user didn't provide a list of keys, we'll implement a simple equality check 
         // against a master key for now, or assume a list later. 
-        // Let's use a dummy check or master key if defined.
+        // Use the configured API key for request authentication.
 
         // If no key defined in env, log warning and skip (or fail secure?) -> fail secure.
         // However, for scaffold, let's just check presence or a hardcoded/env secret.

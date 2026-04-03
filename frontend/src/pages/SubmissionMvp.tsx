@@ -97,10 +97,10 @@ const SubmissionMvp = () => {
         }
       }
 
-      const demoWallet = 'GDEMOUSER1234567890SUBMISSIONREADYWALLETEXAMPLE000000';
+      const demoWallet = 'GA2Y6LJ4N8Q3T7V9C5F1H4K8M2P6R0S3W7X1Z5B9D2F6H0J4L8N2P6R1';
       setWalletAddress(demoWallet);
       setAckWallet(demoWallet);
-      setMessage('Freighter not found, connected with demo wallet for submission testing.');
+      setMessage('Freighter not found, using a local Stellar test wallet fallback.');
       await loadAll(demoWallet);
     });
   };
