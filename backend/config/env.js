@@ -12,11 +12,14 @@ dotenv.config();
 
 export const config = {
     port: process.env.PORT || 8000,
+    nodeEnv: process.env.NODE_ENV || 'development',
     apiKeyHeader: 'x-api-key',
     appApiKey: process.env.APP_API_KEY,
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     geminiApiKey: process.env.GEMINI_API_KEY,
     nirbhayaServiceUrl: process.env.NIRBHAYA_SERVICE_URL || 'http://localhost:8001',
+    corsOrigin: process.env.CORS_ORIGIN || '*',
+    enableDemoSeed: process.env.ENABLE_DEMO_SEED === 'true',
     rateLimit: {
         max: 100,
         timeWindow: '1 minute'

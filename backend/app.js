@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import authPlugin from './plugins/auth.js';
 import rateLimitPlugin from './plugins/rate-limit.js';
 import sorobanService from './services/sorobanService.js';
+import { config } from './config/env.js';
 
 // Import Routes
 import navigationRoutes from './routes/navigation/index.js';
@@ -17,8 +18,9 @@ export async function buildApp() {
     await sorobanService.initialize();
 
     // Global Plugins
+    const allowAllOrigins = config.corsOrigin === '*';
     await app.register(cors, {
-        origin: '*', // Allow all origins for debugging
+        origin: allowAllOrigins ? true : config.corsOrigin,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
     });

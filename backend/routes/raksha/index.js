@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'crypto';
 import sorobanService from '../../services/sorobanService.js';
 import { generateDemoScenario } from '../../services/demoDataService.js';
 import productionReadinessService from '../../services/productionReadinessService.js';
+import { config } from '../../config/env.js';
 
 const profiles = new Map();
 const trustedContacts = new Map();
@@ -60,7 +61,7 @@ function seedStateFromScenario(scenario) {
 
 export default async function rakshaRoutes(fastify) {
     fastify.post('/seed-demo', async (request, reply) => {
-        if (process.env.NODE_ENV === 'production' && process.env.ENABLE_DEMO_SEED !== 'true') {
+        if (config.nodeEnv === 'production' && !config.enableDemoSeed) {
             return reply.code(403).send({
                 error: 'Forbidden',
                 message: 'Demo seeding is disabled in production'
