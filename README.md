@@ -256,7 +256,7 @@ The repository now includes a production-readiness layer for Level 6 with live b
 | Monitoring active | Implemented | [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) and `/api/v1/raksha/monitoring` |
 | Data indexing implemented | Implemented | [docs/PRODUCTION_READINESS.md](docs/PRODUCTION_READINESS.md) and `/api/v1/raksha/indexing` |
 | Full documentation | Implemented | [docs/](docs), [SUBMISSION_GUIDE.md](SUBMISSION_GUIDE.md), [DEPLOYMENT.md](DEPLOYMENT.md), [ARCHITECTURE.md](ARCHITECTURE.md) |
-| 1 community contribution | Needs external proof | Add the post URL in this section before submission. |
+| 1 community contribution | Implemented | [Live X post](https://x.com/georgian_deep/status/2040425396102156586?s=20) published 2026-04-04 |
 | 1 advanced feature implemented | Implemented | Fee sponsorship support in the SOS flow and the production-readiness summary. |
 | Minimum 15+ meaningful commits | Implemented | 22+ commits verified on main branch as of 2026-04-04 (`git rev-list --count HEAD`). |
 | Deliverable: Production-ready application | Implemented | Local build verified, backend seed flow verified, and production-readiness dashboard available. |
