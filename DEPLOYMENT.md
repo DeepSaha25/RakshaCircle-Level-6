@@ -1,215 +1,179 @@
-# Deployment Guide (Vercel Frontend + Render Backend + Render Chatbot)
+# Deployment Guide (First-Time Setup)
 
-This guide is for manual deployment on free tier, without using Render Blueprint automation.
+This guide is written for a fresh deployment where nothing is deployed yet.
 
-## Target Architecture
+## Final Architecture
 
-- Frontend (React/Vite): Vercel
-- Backend API (Node/Fastify): Render Web Service
-- Chatbot API (Python/FastAPI): Render Web Service
+- Backend API: Render Web Service
+- Frontend App: Vercel Project
+- Smart Contract: Soroban on Stellar Testnet
 
-Production request flow:
+## Step 0: Prepare Required Accounts and Tools
 
-1. Browser calls frontend on Vercel.
-2. Frontend calls backend on Render.
-3. Backend proxies chat requests to chatbot on Render.
+1. Create accounts:
+- Render
+- Vercel
+- Stellar testnet wallet (for Soroban deploy)
 
-## Prerequisites
+2. Install tools locally:
+- Node.js 20+
+- npm
+- Rust + cargo
+- Soroban CLI
 
-Before starting, keep these ready:
+3. Keep these secrets ready:
+- APP_API_KEY (one shared key for backend and frontend)
+- GOOGLE_MAPS_API_KEY (server key for backend)
+- VITE_GOOGLE_MAPS_API_KEY (browser key for frontend)
+- GEMINI_API_KEY
+- Stellar source account secret (for contract deploy)
 
-- GitHub repository with latest main branch.
-- One shared secret value for API auth.
-- Google Maps API key for backend.
-- Gemini API key for backend and chatbot.
-- Optional OpenAI API key if chatbot provider is openai.
+## Step 1: Configure Backend Environment
 
-Recommended naming for shared secret:
+Use this exact backend env template:
 
-- SHARED_APP_KEY: any long random string
+```env
+PORT=8000
+NODE_ENV=production
 
-You will use this same value in:
+APP_API_KEY=replace_with_shared_app_key
+GOOGLE_MAPS_API_KEY=replace_with_google_maps_server_key
+GEMINI_API_KEY=replace_with_gemini_key
 
-- backend APP_API_KEY
-- chatbot API_KEY
-- frontend VITE_API_KEY
+# Set this to your deployed Vercel app URL after frontend deploy.
+# Example: https://your-app.vercel.app
+CORS_ORIGIN=https://your-frontend.vercel.app
 
-## Environment Variable Mapping
+ENABLE_DEMO_SEED=false
 
-Use this exact mapping:
+# Contract settings (set SOROBAN_CONTRACT_ID after Step 3)
+SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
+SOROBAN_CONTRACT_ID=
 
-- Backend (Render)
-  - APP_API_KEY = SHARED_APP_KEY
-  - GOOGLE_MAPS_API_KEY = your Google Maps server key
-  - GEMINI_API_KEY = your Gemini key
-  - NIRBHAYA_SERVICE_URL = chatbot service URL from Render
-- Chatbot (Render)
-  - API_KEY = SHARED_APP_KEY
-  - GEMINI_API_KEY = your Gemini key
-  - OPENAI_API_KEY = optional
-  - LLM_PROVIDER = gemini or openai
-- Frontend (Vercel)
-  - VITE_API_BASE_URL = backend service URL from Render (no trailing slash)
-  - VITE_API_KEY = SHARED_APP_KEY
-  - VITE_GOOGLE_MAPS_API_KEY = browser Maps key
+# Optional advanced settings
+NIRBHAYA_SERVICE_URL=
+SERVER_PUBLIC_KEY=
+SERVER_SECRET_KEY=
+FEE_SPONSOR_WALLET=
+```
 
-## Step 1: Deploy Chatbot Service on Render
+Notes:
+- `APP_API_KEY` and frontend `VITE_API_KEY` must be identical.
+- If `SOROBAN_CONTRACT_ID` is empty, backend runs in mock on-chain mode.
 
-Deploy chatbot first so backend can reference its URL.
+## Step 2: Deploy Backend on Render
 
-In Render:
-
-1. New + > Web Service
-2. Connect your GitHub repository
-3. Configure service
-   - Name: rakshamarg-chatbot
-   - Runtime: Python 3
-   - Region: choose closest to users
-   - Branch: main
-   - Root Directory: nirbhaya_bot
-   - Build Command: pip install -r requirements.txt
-   - Start Command: uvicorn main:app --host 0.0.0.0 --port $PORT
-   - Health Check Path: /health
-4. Add environment variables
-   - API_KEY
-   - GEMINI_API_KEY
-   - OPENAI_API_KEY (only if needed)
-   - LLM_PROVIDER (gemini recommended)
-5. Create Web Service and wait for first successful deploy
-6. Copy service URL, for example
-   - https://rakshamarg-chatbot.onrender.com
-
-Quick verification:
-
-- Open https://your-chatbot-url/health
-- Expected JSON includes status healthy
-
-## Step 2: Deploy Backend Service on Render
-
-After chatbot is live, deploy backend.
-
-In Render:
-
-1. New + > Web Service
-2. Connect the same GitHub repository
-3. Configure service
-   - Name: rakshamarg-backend
-   - Runtime: Node
-   - Region: same as chatbot if possible
-   - Branch: main
-   - Root Directory: leave empty (repository root)
-   - Build Command: npm install
-   - Start Command: npm start
-   - Health Check Path: /health
-4. Add environment variables
-   - APP_API_KEY = same exact value as chatbot API_KEY
-   - GOOGLE_MAPS_API_KEY
-   - GEMINI_API_KEY
-   - NIRBHAYA_SERVICE_URL = https://your-chatbot-url
-5. Create Web Service and wait for healthy deploy
-6. Copy backend URL, for example
-   - https://rakshamarg-backend.onrender.com
-
-Quick verification:
-
-- Open https://your-backend-url/health
-- Expected JSON includes status ok
-
-## Step 3: Deploy Frontend on Vercel
-
-The repository already contains vercel.json configured to build frontend and serve SPA routes.
-
-In Vercel:
-
-1. Add New Project
-2. Import same GitHub repository
-3. Keep default root as repository root
-4. In Environment Variables, add:
-   - VITE_API_BASE_URL = https://your-backend-url
-   - VITE_API_KEY = same exact shared key
-   - VITE_GOOGLE_MAPS_API_KEY = browser key
+1. Open Render -> New -> Web Service
+2. Connect this GitHub repository
+3. Configure:
+- Name: `rakshacircle-backend`
+- Runtime: `Node`
+- Branch: `main`
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `node server.js`
+- Health Check Path: `/health`
+4. Add backend environment variables from Step 1
 5. Deploy
 
-If you edit env vars later, redeploy so frontend gets updated values.
+Verify backend:
+- `GET https://your-backend-url.onrender.com/health`
 
-## Post-Deployment Validation Checklist
+Expected:
+- status is ok
 
-Run checks in this order:
+## Step 3: Deploy Soroban Smart Contract
 
-1. Chatbot health
-   - GET https://your-chatbot-url/health
-2. Backend health
-   - GET https://your-backend-url/health
-3. Frontend loads
-   - Open your Vercel app URL
-4. Route API works
-   - Search a route from frontend UI
-5. Chatbot works through backend proxy
-   - Send a chatbot message from UI
-6. Emergency endpoint path
-   - Trigger chat emergency intent and confirm response
+From repository root:
 
-Optional direct backend chat test:
+1. Build contract
 
-Use any API client and call:
+```bash
+cd contracts/raksha-safety
+cargo build --target wasm32-unknown-unknown --release
+```
 
-- POST https://your-backend-url/api/v1/navigation/chat
-- Headers
-  - Content-Type: application/json
-  - x-api-key: SHARED_APP_KEY
-- Body
-  - message: test message
-  - conversationHistory: []
-  - journeyContext: {}
+2. Deploy to testnet
 
-## Common Issues and Fixes
+```bash
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/raksha_safety.wasm \
+  --source <your-account-secret> \
+  --network testnet
+```
 
-401 Invalid API key:
+3. Copy returned contract id (starts with `C`)
+4. In Render backend env, set `SOROBAN_CONTRACT_ID=<that_contract_id>`
+5. Redeploy backend
 
-- Ensure these three are identical:
-  - backend APP_API_KEY
-  - chatbot API_KEY
-  - frontend VITE_API_KEY
+## Step 4: Configure Frontend Environment
 
-Backend cannot reach chatbot:
+Use this exact frontend env template:
 
-- Verify backend NIRBHAYA_SERVICE_URL points to chatbot Render URL.
-- Check chatbot logs for request arrivals.
-- Ensure URL has https and no trailing path.
+```env
+VITE_API_BASE_URL=https://your-backend-url.onrender.com
+VITE_API_KEY=replace_with_same_app_api_key
+VITE_GOOGLE_MAPS_API_KEY=replace_with_google_maps_browser_key
+```
 
-Frontend calls wrong backend:
+Notes:
+- No trailing slash in `VITE_API_BASE_URL`.
+- `VITE_API_KEY` must match backend `APP_API_KEY` exactly.
 
-- Verify VITE_API_BASE_URL is backend URL only.
-- No trailing slash.
-- Redeploy frontend after env changes.
+## Step 5: Deploy Frontend on Vercel
 
-Render cold start delay on free tier:
+1. Open Vercel -> Add New Project
+2. Import this repository
+3. Set Root Directory: `frontend`
+4. Add frontend env variables from Step 4
+5. Deploy
 
-- First request after idle can be slow.
-- Retry once after warm-up.
+After frontend URL is generated:
+1. Set backend `CORS_ORIGIN` to that exact Vercel URL
+2. Redeploy backend once
 
-Missing Python or Node dependencies:
+## Step 6: Run Smoke Checks
 
-- Confirm commands exactly:
-  - chatbot build: pip install -r requirements.txt
-  - chatbot start: uvicorn main:app --host 0.0.0.0 --port $PORT
-  - backend build: npm install
-  - backend start: npm start
+Local backend smoke check:
 
-Google or Gemini key errors:
+```bash
+npm run backend:smoke
+```
 
-- Recheck keys in Render env vars.
-- Ensure APIs are enabled on provider dashboard.
+Production checks:
+
+1. `GET https://your-backend-url.onrender.com/health`
+2. Open frontend Vercel URL
+3. Create profile
+4. Save trusted contacts
+5. Trigger SOS
+6. Acknowledge event
+7. Check readiness endpoints:
+- `/api/v1/raksha/metrics`
+- `/api/v1/raksha/monitoring`
+- `/api/v1/raksha/indexing`
+- `/api/v1/raksha/production-readiness`
+
+## Common Mistakes
+
+1. 401 errors on API
+- Cause: `APP_API_KEY` and `VITE_API_KEY` mismatch
+
+2. CORS blocked in browser
+- Cause: wrong `CORS_ORIGIN`
+- Fix: set exact frontend URL (including https)
+
+3. On-chain data not recorded
+- Cause: `SOROBAN_CONTRACT_ID` missing
+- Fix: complete Step 3 and redeploy backend
+
+4. Route/chat issues
+- Cause: missing Maps or Gemini keys
+- Fix: verify backend env values and redeploy
 
 ## Security Checklist
 
-- Never commit real .env files or API keys.
-- Rotate any key that was exposed in chat, screenshots, or commits.
-- Restrict Google API keys by domain or usage where possible.
-- Use separate keys for local and production.
-
-## Notes
-
-- This project can use render.yaml, but manual setup is fully supported and suitable for free tier.
-- Backend CORS currently allows all origins; tighten this for production if needed.
-- Keep backend and chatbot in same region for lower latency.
+- Do not commit real secrets
+- Rotate keys if exposed
+- Use separate local and production keys
+- Restrict Google Maps browser key by referrer
