@@ -18,6 +18,8 @@ export const config = {
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     geminiApiKey: process.env.GEMINI_API_KEY,
     nirbhayaServiceUrl: process.env.NIRBHAYA_SERVICE_URL || 'http://localhost:8001',
+    sorobanRpcUrl: process.env.SOROBAN_RPC_URL || 'https://soroban-testnet.stellar.org',
+    sorobanContractId: process.env.SOROBAN_CONTRACT_ID || '',
     corsOrigin: process.env.CORS_ORIGIN || '*',
     enableDemoSeed: process.env.ENABLE_DEMO_SEED === 'true',
     rateLimit: {

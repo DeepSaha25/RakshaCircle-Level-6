@@ -524,7 +524,7 @@ export default async function (fastify, opts) {
             } catch (fallbackError) {
                 return reply.code(500).send({
                     error: 'Chat processing failed',
-                    message: `Failed to connect to Nirbhaya service on ${process.env.NIRBHAYA_SERVICE_URL || 'http://localhost:8001'}. Ensure Python service is running. Error: ${error.message}`,
+                    message: `Unable to reach external assistant service at ${process.env.NIRBHAYA_SERVICE_URL || 'http://localhost:8001'}. Configure NIRBHAYA_SERVICE_URL or rely on Node fallback assistant. Error: ${error.message}`,
                     fallbackError: fallbackError.message
                 });
             }

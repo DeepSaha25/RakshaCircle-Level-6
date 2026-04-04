@@ -1,7 +1,9 @@
 import { buildApp } from './app.js';
 import { config } from './config/env.js';
+import { runStartupChecks } from './config/startupChecks.js';
 
 const start = async () => {
+    runStartupChecks();
     const app = await buildApp();
 
     try {
