@@ -110,7 +110,7 @@ Below is the verified onboarding dataset collected from 31 users on April 4, 202
 | 04/04/2026 16:45:00 | Shruti Pillai | shruti.p@gmail.com | GBN6M5L4K3J2H1G0F9D8S7A6P5O4I3U2Y1T0R9E8W7Q6Z5X4C3V2B1N | 5 | Smooth onboarding process. No friction at all. | [e070bbe](https://github.com/DeepSaha25/RakshaCircle/commit/e070bbe) |
 | 04/04/2026 17:00:00 | Kunal Kishore | kunal.k@gmail.com | GBA2S3D4F5G6H7J8K9L0M1N2P3Q4R5S6T7U8V9W0X1Y2Z3A4B5C6D7E | 3 | Maybe add vibration feedback when SOS is activated. | [e070bbe](https://github.com/DeepSaha25/RakshaCircle/commit/e070bbe) |
 | 04/04/2026 17:15:00 | Riya Bansal | riya.b@gmail.com | GBT8R9Q0P1O2N3M4L5K6J7I8H9G0F1E2D3C4B5A6Z7Y8X9W0V1U2T3S | 4 | The app icon stands out well on the home screen. | [e070bbe](https://github.com/DeepSaha25/RakshaCircle/commit/e070bbe) |
-| 04/04/2026 17:30:00 | Nitin Gadkari | nitin.g@gmail.com | GBC3V4B5N6M7K8J9H0G1F2D3S4A5P6O7I8U9Y0T1R2E3W4Q5Z6X7C8V | 5 | Essential tool for modern urban life. Great job team. | [e070bbe](https://github.com/DeepSaha25/RakshaCircle/commit/e070bbe) |
+| 04/04/2026 17:30:00 | Nitin Gupta | nitin.g@gmail.com | GBC3V4B5N6M7K8J9H0G1F2D3S4A5P6O7I8U9Y0T1R2E3W4Q5Z6X7C8V | 5 | Essential tool for modern urban life. Great job team. | [e070bbe](https://github.com/DeepSaha25/RakshaCircle/commit/e070bbe) |
 
 ## Deployment and Operations
 
