@@ -465,6 +465,9 @@ const SubmissionMvp = () => {
               <a className="ghost" href="tel:102">Call Ambulance (102)</a>
               <button className="ghost" type="button" onClick={handleTestAlertTone} disabled={isBusy}>Test Loud Alert Tone</button>
             </div>
+            <p className="muted" style={{ margin: 0, fontSize: '0.84rem' }}>
+              SMS and acknowledgment notifications are optimized for low-latency dispatch during emergencies.
+            </p>
           </div>
         </article>
 
