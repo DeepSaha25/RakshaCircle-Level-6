@@ -303,6 +303,9 @@ const SubmissionMvp = () => {
             Install Freighter, switch to Stellar Testnet, unlock extension, and approve this app when prompted.
           </p>
         </details>
+        <p className="muted" style={{ marginTop: '0.45rem', fontSize: '0.84rem' }}>
+          Fast start option: use Load 30+ Demo Users to explore the full flow without setup friction.
+        </p>
         <div className="wallet-row" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
             className="ghost"
