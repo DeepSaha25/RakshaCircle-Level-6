@@ -39,6 +39,7 @@ const SubmissionMvp = () => {
   const [ackNote, setAckNote] = useState('I received your alert and I am on the way.');
   const [statusMessage, setStatusMessage] = useState('Connect wallet or load the demo scenario to begin.');
   const [isBusy, setIsBusy] = useState(false);
+  const [isProfileSaving, setIsProfileSaving] = useState(false);
   const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
   const recentSosEvents = useMemo(() => events.filter((item) => item.eventType === 'SOS').slice(0, 5), [events]);
 
@@ -129,9 +130,14 @@ const SubmissionMvp = () => {
     }
 
     await withBusy(async () => {
-      await saveProfile(walletAddress, profileName);
-      setMessage('Profile saved successfully.');
-      setDashboardRefreshKey((current) => current + 1);
+      setIsProfileSaving(true);
+      try {
+        await saveProfile(walletAddress, profileName);
+        setMessage('Profile saved successfully.');
+        setDashboardRefreshKey((current) => current + 1);
+      } finally {
+        setIsProfileSaving(false);
+      }
     });
   };
 
@@ -269,12 +275,12 @@ const SubmissionMvp = () => {
               />
             </label>
             <button className="primary" type="submit" disabled={isBusy || !walletAddress}>
-              Save Profile
+              {isProfileSaving ? 'Saving Profile...' : 'Save Profile'}
             </button>
             <p className="muted" style={{ fontSize: '0.92em', marginTop: '0.5em' }}>
               <strong>Privacy:</strong> Your name and wallet address are only used for emergency coordination. No sensitive data is shared publicly. You can delete your profile at any time.
             </p>
-            {isBusy && (
+            {isProfileSaving && (
               <div style={{
                 position: 'absolute',
                 top: 0,
