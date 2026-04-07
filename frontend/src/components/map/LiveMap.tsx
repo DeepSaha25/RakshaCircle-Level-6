@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { GoogleMap, DirectionsRenderer, Polyline, Marker, InfoWindow } from '@react-google-maps/api';
 import { MapPin, Navigation, Minimize2, Maximize2 } from 'lucide-react';
 
@@ -59,6 +59,22 @@ const LiveMap: React.FC<LiveMapProps> = ({
     isFullScreen,
     setIsFullScreen
 }) => {
+    const constrainedNetwork = useMemo(() => {
+        const connection = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
+        const effectiveType = connection?.effectiveType || '';
+        return Boolean(connection?.saveData || /2g|3g/.test(effectiveType));
+    }, []);
+
+    const visiblePoliceStations = useMemo(
+        () => (constrainedNetwork ? policeStations.slice(0, 10) : policeStations),
+        [constrainedNetwork, policeStations]
+    );
+
+    const visibleHospitals = useMemo(
+        () => (constrainedNetwork ? hospitals.slice(0, 10) : hospitals),
+        [constrainedNetwork, hospitals]
+    );
+
     const userMarkerRef = useRef<google.maps.Marker | null>(null);
     const nearestHospitalMarkerRef = useRef<google.maps.Marker | null>(null);
     const nearestPoliceMarkerRef = useRef<google.maps.Marker | null>(null);
@@ -264,7 +280,7 @@ const LiveMap: React.FC<LiveMapProps> = ({
                         )}
 
                         {/* Police Stations Markers */}
-                        {policeStations.map((station, idx) => (
+                        {visiblePoliceStations.map((station, idx) => (
                             station.geometry?.location && (
                                 <Marker
                                     key={`police-${idx}`}
@@ -279,7 +295,7 @@ const LiveMap: React.FC<LiveMapProps> = ({
                         ))}
 
                         {/* Hospital Markers */}
-                        {hospitals.map((hospital, idx) => (
+                        {visibleHospitals.map((hospital, idx) => (
                             hospital.geometry?.location && (
                                 <Marker
                                     key={`hospital-${idx}`}
