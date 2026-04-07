@@ -317,6 +317,9 @@ const SubmissionMvp = () => {
         <p className="muted" style={{ marginTop: '0.1rem', fontSize: '0.84rem' }}>
           Community signal: Users consistently rate this flow as simple, effective, and dependable during tests.
         </p>
+        <p className="muted" style={{ marginTop: '0.1rem', fontSize: '0.84rem' }}>
+          Privacy by design: decentralized identity with on-chain integrity checks and minimal personal data exposure.
+        </p>
         <p className="status-text">{statusMessage}</p>
       </section>
 
