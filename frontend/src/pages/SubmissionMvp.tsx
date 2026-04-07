@@ -193,6 +193,9 @@ const SubmissionMvp = () => {
         const latest = await getEvents(walletAddress);
         setEvents(latest.events);
         setMessage('SOS triggered and recorded successfully.');
+        if (navigator.vibrate) {
+          navigator.vibrate([250, 120, 250]);
+        }
         setContextText('');
         setDashboardRefreshKey((current) => current + 1);
       } catch {
