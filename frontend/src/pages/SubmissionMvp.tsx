@@ -173,18 +173,22 @@ const SubmissionMvp = () => {
     }
 
     await withBusy(async () => {
-      await triggerSos({
-        walletAddress,
-        eventType,
-        contextText,
-        locationHint,
-      });
+      try {
+        await triggerSos({
+          walletAddress,
+          eventType,
+          contextText,
+          locationHint,
+        });
 
-      const latest = await getEvents(walletAddress);
-      setEvents(latest.events);
-      setMessage('SOS triggered and recorded successfully.');
-      setContextText('');
-      setDashboardRefreshKey((current) => current + 1);
+        const latest = await getEvents(walletAddress);
+        setEvents(latest.events);
+        setMessage('SOS triggered and recorded successfully.');
+        setContextText('');
+        setDashboardRefreshKey((current) => current + 1);
+      } catch {
+        setMessage('SOS trigger failed. Please check connectivity and retry in a few seconds.', true);
+      }
     });
   };
 
