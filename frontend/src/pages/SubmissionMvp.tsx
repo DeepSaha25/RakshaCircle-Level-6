@@ -25,6 +25,7 @@ function shortenWallet(walletAddress: string) {
 }
 
 const SubmissionMvp = () => {
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [walletAddress, setWalletAddress] = useState('');
   const [profileName, setProfileName] = useState('');
   const [contacts, setContacts] = useState<TrustedContact[]>([
@@ -216,7 +217,7 @@ const SubmissionMvp = () => {
   };
 
   return (
-    <main className="submission-page">
+    <main className={`submission-page ${isDarkMode ? 'theme-dark' : 'theme-light'}`}>
       {isBusy && (
         <div style={{
           position: 'fixed',
@@ -253,6 +254,14 @@ const SubmissionMvp = () => {
           Guided flow: Connect Wallet -> Save Profile -> Save Contacts -> Trigger SOS -> Track Acknowledgments.
         </p>
         <div className="wallet-row" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
+          <button
+            className="ghost"
+            type="button"
+            onClick={() => setIsDarkMode((current) => !current)}
+            disabled={isBusy}
+          >
+            {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          </button>
           <button className="primary" onClick={handleConnectWallet} disabled={isBusy} type="button">
             Connect Freighter Wallet
           </button>
