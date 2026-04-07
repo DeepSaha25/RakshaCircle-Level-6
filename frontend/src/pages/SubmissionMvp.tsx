@@ -383,6 +383,9 @@ const SubmissionMvp = () => {
                 placeholder="Near Park Street Metro"
               />
             </label>
+            <p className="muted" style={{ margin: 0, fontSize: '0.85rem' }}>
+              Precision tip: Add a nearby landmark or metro stop so responders can reach you faster.
+            </p>
             <label>
               Context
               <textarea
