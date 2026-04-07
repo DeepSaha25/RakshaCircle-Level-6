@@ -46,6 +46,8 @@ RakshaCircle does not ship a native lock-screen widget yet, but users can create
 
 This keeps SOS access one tap away while native widget support is being evaluated.
 
+Tip: Keep the RakshaCircle shortcut icon on the first row of your home screen so it is quickly recognizable in urgent situations.
+
 ## Notes for Demo Day
 
 - Keep the live demo link in the README current.
