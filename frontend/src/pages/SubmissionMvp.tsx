@@ -24,6 +24,10 @@ function shortenWallet(walletAddress: string) {
   return `${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}`;
 }
 
+function isValidStellarWallet(wallet: string) {
+  return /^G[A-Z2-7]{55}$/.test(wallet.trim().toUpperCase());
+}
+
 const SubmissionMvp = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [walletAddress, setWalletAddress] = useState('');
@@ -160,6 +164,11 @@ const SubmissionMvp = () => {
 
     await withBusy(async () => {
       const cleaned = contacts.filter((item) => item.name?.trim());
+      const invalidWalletContact = cleaned.find((item) => item.walletAddress?.trim() && !isValidStellarWallet(item.walletAddress));
+      if (invalidWalletContact) {
+        setMessage(`Invalid Stellar wallet for contact ${invalidWalletContact.name || 'entry'}. Wallets must start with G and be 56 chars.`, true);
+        return;
+      }
       await saveTrustedContacts(walletAddress, cleaned);
       setMessage(`Saved ${cleaned.length} trusted contacts.`);
       setDashboardRefreshKey((current) => current + 1);
