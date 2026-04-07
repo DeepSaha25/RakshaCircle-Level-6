@@ -407,6 +407,11 @@ const SubmissionMvp = () => {
               TRIGGER EMERGENCY SOS NOW
             </button>
             <p className="danger-hint">Use only for active emergencies. This sends immediate alerts to your trusted circle.</p>
+            <div className="actions-row" style={{ marginTop: '0.25rem' }}>
+              <a className="ghost" href="tel:112">Call 112</a>
+              <a className="ghost" href="tel:100">Call Police (100)</a>
+              <a className="ghost" href="tel:102">Call Ambulance (102)</a>
+            </div>
           </div>
         </article>
 
