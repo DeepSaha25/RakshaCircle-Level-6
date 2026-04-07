@@ -280,6 +280,9 @@ const SubmissionMvp = () => {
           </button>
           <span>{walletAddress ? shortenWallet(walletAddress) : 'No wallet connected'}</span>
         </div>
+        <p className="muted" style={{ marginTop: '0.45rem', fontSize: '0.86rem' }}>
+          Designed to reduce panic moments with one-tap emergency signaling and fast acknowledgment tracking.
+        </p>
         <p className="status-text">{statusMessage}</p>
       </section>
 
