@@ -309,6 +309,12 @@ const SubmissionMvp = () => {
 
         <article className="submission-card">
           <h2>2. Trusted Circle</h2>
+          <details className="contacts-help">
+            <summary>How do I update my emergency contacts?</summary>
+            <p className="muted" style={{ margin: '0.45rem 0 0' }}>
+              Edit any existing row, add a new row if needed, then click Save Contacts. Your latest list replaces the previous saved version.
+            </p>
+          </details>
           <div className="stack">
             {contacts.map((contact, index) => (
               <div key={contact.id || index} className="contact-row">

@@ -90,6 +90,19 @@
   gap: 0.7rem;
 }
 
+.contacts-help {
+  margin-bottom: 0.65rem;
+  border: 1px solid rgba(121, 138, 166, 0.36);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  background: rgba(8, 15, 28, 0.45);
+}
+
+.contacts-help summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .actions-row {
   display: flex;
   gap: 0.55rem;
