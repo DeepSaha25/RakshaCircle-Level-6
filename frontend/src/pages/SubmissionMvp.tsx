@@ -288,6 +288,12 @@ const SubmissionMvp = () => {
             1) Connect wallet. 2) Save your profile. 3) Add at least one trusted contact. 4) Use Trigger SOS only in emergencies.
           </p>
         </details>
+        <details className="contacts-help" style={{ marginTop: '0.45rem' }}>
+          <summary>Wallet setup in under a minute</summary>
+          <p className="muted" style={{ margin: '0.45rem 0 0' }}>
+            Install Freighter, switch to Stellar Testnet, unlock extension, and approve this app when prompted.
+          </p>
+        </details>
         <div className="wallet-row" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
             className="ghost"
