@@ -368,3 +368,32 @@
   background: rgba(255, 214, 117, 0.22);
   border: 1px solid rgba(204, 136, 16, 0.25);
 }
+
+.submission-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.section-dot {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.profile-dot {
+  background: #4ade80;
+}
+
+.circle-dot {
+  background: #60a5fa;
+}
+
+.sos-dot {
+  background: #f97316;
+}
+
+.history-dot {
+  background: #facc15;
+}

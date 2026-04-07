@@ -316,7 +316,7 @@ const SubmissionMvp = () => {
 
       <section className="submission-grid">
         <article className="submission-card">
-          <h2>1. Profile</h2>
+          <h2><span className="section-dot profile-dot" />1. Profile</h2>
           <form onSubmit={handleSaveProfile} className="stack" style={{ position: 'relative' }}>
             <label>
               Name
@@ -358,7 +358,7 @@ const SubmissionMvp = () => {
         </article>
 
         <article className="submission-card">
-          <h2>2. Trusted Circle (Family Monitoring)</h2>
+          <h2><span className="section-dot circle-dot" />2. Trusted Circle (Family Monitoring)</h2>
           <details className="contacts-help">
             <summary>How do I update my emergency contacts?</summary>
             <p className="muted" style={{ margin: '0.45rem 0 0' }}>
@@ -402,7 +402,7 @@ const SubmissionMvp = () => {
         </article>
 
         <article className="submission-card">
-          <h2>3. SOS Trigger</h2>
+          <h2><span className="section-dot sos-dot" />3. SOS Trigger</h2>
           <div className="stack">
             <label>
               Event Type
@@ -445,7 +445,7 @@ const SubmissionMvp = () => {
         </article>
 
         <article className="submission-card">
-          <h2>4. Alert History</h2>
+          <h2><span className="section-dot history-dot" />4. Alert History</h2>
           <div className="stack">
             <div className="actions-row">
               <input
