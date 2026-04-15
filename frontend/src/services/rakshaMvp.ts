@@ -127,7 +127,11 @@ export async function saveProfile(walletAddress: string, name: string) {
 
 export async function getProfile(walletAddress: string) {
   const response = await fetch(`${apiPrefix}/profile/${encodeURIComponent(walletAddress)}`);
-  return parseResponse<{ profile: { walletAddress: string; name: string } }>(response);
+  if (response.status === 404) {
+    return { profile: null };
+  }
+
+  return parseResponse<{ profile: { walletAddress: string; name: string } | null }>(response);
 }
 
 export async function saveTrustedContacts(walletAddress: string, contacts: TrustedContact[]) {

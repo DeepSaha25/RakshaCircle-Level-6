@@ -113,18 +113,14 @@ export default async function rakshaRoutes(fastify) {
         };
     });
 
-    fastify.get('/profile/:walletAddress', async (request, reply) => {
+    fastify.get('/profile/:walletAddress', async (request) => {
         const normalizedWallet = normalizeWallet(request.params.walletAddress);
-        const profile = profiles.get(normalizedWallet);
+        const profile = profiles.get(normalizedWallet) || null;
 
-        if (!profile) {
-            return reply.code(404).send({
-                error: 'Not Found',
-                message: 'Profile not found'
-            });
-        }
-
-        return { profile };
+        return {
+            walletAddress: normalizedWallet,
+            profile
+        };
     });
 
     fastify.post('/trusted-contacts', async (request, reply) => {

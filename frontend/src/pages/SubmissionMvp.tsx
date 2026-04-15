@@ -12,6 +12,7 @@ import {
   TrustedContact,
   SosEvent,
 } from '@/services/rakshaMvp';
+import { connectFreighterWallet } from '@/services/freighter';
 import './SubmissionMvp.css';
 
 const EMPTY_CONTACT: TrustedContact = { name: '', walletAddress: '', phone: '' };
@@ -71,7 +72,7 @@ const SubmissionMvp = () => {
     ]);
 
     if (profileResult.status === 'fulfilled') {
-      setProfileName(profileResult.value.profile.name);
+      setProfileName(profileResult.value.profile?.name || '');
     }
 
     if (contactsResult.status === 'fulfilled' && contactsResult.value.contacts.length > 0) {
@@ -90,25 +91,19 @@ const SubmissionMvp = () => {
 
   const handleConnectWallet = async () => {
     await withBusy(async () => {
-      if (window.freighterApi?.getPublicKey) {
-        try {
-          const publicKey = await window.freighterApi.getPublicKey();
-          setWalletAddress(publicKey);
-          setAckWallet(publicKey);
-          setMessage(`Wallet connected: ${shortenWallet(publicKey)}`);
-          await loadAll(publicKey);
-          return;
-        } catch {
-          setMessage('Wallet connection failed. Check that Freighter is installed, unlocked, permission is granted to this site, and network is set to Stellar Testnet. Then retry connect.', true);
-          return;
-        }
+      try {
+        const publicKey = await connectFreighterWallet();
+        setWalletAddress(publicKey);
+        setAckWallet(publicKey);
+        setMessage(`Wallet connected: ${shortenWallet(publicKey)}`);
+        await loadAll(publicKey);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Wallet connection failed.';
+        setMessage(
+          `${errorMessage} Check that Freighter is installed, unlocked, granted for this site, and set to Stellar Testnet. You can also use Load 30+ Demo Users.`,
+          true
+        );
       }
-
-      const demoWallet = 'GA2Y6LJ4N8Q3T7V9C5F1H4K8M2P6R0S3W7X1Z5B9D2F6H0J4L8N2P6R1';
-      setWalletAddress(demoWallet);
-      setAckWallet(demoWallet);
-      setMessage('Freighter not found, using a local Stellar test wallet fallback.');
-      await loadAll(demoWallet);
     });
   };
 
@@ -292,7 +287,7 @@ const SubmissionMvp = () => {
           and tamper-proof style event history.
         </p>
         <p className="muted" style={{ marginTop: '0.35rem', fontSize: '0.9rem' }}>
-          Guided flow: Connect Wallet -> Save Profile -> Save Contacts -> Trigger SOS -> Track Acknowledgments.
+          Guided flow: Connect Wallet, Save Profile, Save Contacts, Trigger SOS, and Track Acknowledgments.
         </p>
         <details className="contacts-help" style={{ marginTop: '0.6rem' }}>
           <summary>New here? Start tutorial</summary>
