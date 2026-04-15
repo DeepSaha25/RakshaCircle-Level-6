@@ -7,7 +7,6 @@
 - `GET /api/v1/raksha/indexing`
 - `GET /api/v1/raksha/security-checklist`
 - `GET /api/v1/raksha/production-readiness`
-- `POST /api/v1/raksha/seed-demo`
 
 ## Metrics Tracked
 
@@ -39,20 +38,11 @@ The backend maintains an in-memory production index for:
 - Recent event feed
 - Searchable endpoint hints
 
-The seeded demo scenario generates:
-
-- 30 verified user profiles
-- 3 to 5 trusted contacts per user
-- Backdated SOS and check-in events spanning the last 30 days
-- A realistic mix of acknowledged and active alerts
+The indexing data now reflects real user activity captured through profile setup, trusted-contact setup, and SOS workflows.
 
 ## Advanced Feature: Fee Sponsorship
 
 The SOS flow now supports a fee sponsorship toggle. When enabled, the backend returns a fee-sponsored transaction preview so the app has a clear gasless-transaction implementation path.
-
-## Demo Seeding
-
-Use the `POST /api/v1/raksha/seed-demo` endpoint or the frontend **Load 30+ Demo Users** button to populate the production dashboard with the seeded review dataset. This keeps the metrics, monitoring, and indexing panels populated during review.
 
 ## What to Show in Demo Day
 

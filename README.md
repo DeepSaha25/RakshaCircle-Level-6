@@ -33,9 +33,9 @@ Production-ready women safety and emergency coordination platform powered by Ste
 
 ## User Onboarding and Excel Export
 
-- Google Form (collects name, email, wallet, rating, feedback): https://docs.google.com/forms/d/e/1FAIpQLScY0pVw0yrBbj1bjyf264mom1KSEumZsAjLCVGmVS1GOfWPVA/viewform?usp=sharing&ouid=110772656009502976350
-- Response sheet (live): https://docs.google.com/spreadsheets/d/1ldTPP8M3xJDpWhhRNaDlsAwYa-4BgBCcrk_oJpqiKuA/edit?usp=sharing
-- Excel export (.xlsx): https://docs.google.com/spreadsheets/d/1ldTPP8M3xJDpWhhRNaDlsAwYa-4BgBCcrk_oJpqiKuA/export?format=xlsx
+- Google Form (collects name, email, wallet, rating, feedback): https://docs.google.com/forms/d/e/1FAIpQLSdOfoZZjiQkpWCbxz6W20lo6qvNmNDocp36Fo3Vw1NjbjXIug/viewform?usp=publish-editor
+- Response sheet (live): https://docs.google.com/spreadsheets/d/1QHd7NRlK1xxFAf9LTUEV2XumoxzMsvjQr4wHqY4yNtY/edit?resourcekey=&gid=510051736#gid=510051736
+- Excel export (.xlsx): https://docs.google.com/spreadsheets/d/1QHd7NRlK1xxFAf9LTUEV2XumoxzMsvjQr4wHqY4yNtY/export?format=xlsx&gid=510051736
 
 
 ## Data and Monitoring Endpoints
@@ -74,9 +74,9 @@ Reference commit implemented from feedback:
 
 Below is the verified onboarding dataset collected from 31 users. The table includes each user's feedback and the commit used to implement or log action against that feedback.
 
-**Google Form:** [RakshaCircle Onboarding Form](https://docs.google.com/forms/d/e/1FAIpQLScY0pVw0yrBbj1bjyf264mom1KSEumZsAjLCVGmVS1GOfWPVA/viewform?usp=sharing&ouid=110772656009502976350)
+**Google Form:** [RakshaCircle Real User Onboarding Form](https://docs.google.com/forms/d/e/1FAIpQLSdOfoZZjiQkpWCbxz6W20lo6qvNmNDocp36Fo3Vw1NjbjXIug/viewform?usp=publish-editor)
 
-**Excel/Sheet Export:** [31-User Feedback Responses](https://docs.google.com/spreadsheets/d/1ldTPP8M3xJDpWhhRNaDlsAwYa-4BgBCcrk_oJpqiKuA/edit?usp=sharing)
+**Excel/Sheet Export:** [Real User Feedback Responses](https://docs.google.com/spreadsheets/d/1QHd7NRlK1xxFAf9LTUEV2XumoxzMsvjQr4wHqY4yNtY/edit?resourcekey=&gid=510051736#gid=510051736)
 
 | User Name | Email | Stellar Wallet Address | Rating | Feedback | Commit ID |
 |---|---|---|---:|---|---|

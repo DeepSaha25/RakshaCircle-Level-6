@@ -7,7 +7,6 @@ import {
   getTrustedContacts,
   saveProfile,
   saveTrustedContacts,
-  seedDemoData,
   triggerSos,
   TrustedContact,
   SosEvent,
@@ -43,7 +42,7 @@ const SubmissionMvp = () => {
   const [events, setEvents] = useState<SosEvent[]>([]);
   const [ackWallet, setAckWallet] = useState('');
   const [ackNote, setAckNote] = useState('I received your alert and I am on the way.');
-  const [statusMessage, setStatusMessage] = useState('Connect wallet or load the demo scenario to begin.');
+  const [statusMessage, setStatusMessage] = useState('Connect your wallet to begin.');
   const [isBusy, setIsBusy] = useState(false);
   const [isProfileSaving, setIsProfileSaving] = useState(false);
   const [dashboardRefreshKey, setDashboardRefreshKey] = useState(0);
@@ -100,25 +99,10 @@ const SubmissionMvp = () => {
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Wallet connection failed.';
         setMessage(
-          `${errorMessage} Check that Freighter is installed, unlocked, granted for this site, and set to Stellar Testnet. You can also use Load 30+ Demo Users.`,
+          `${errorMessage} Check that Freighter is installed, unlocked, granted for this site, and set to Stellar Testnet.`,
           true
         );
       }
-    });
-  };
-
-  const handleLoadDemoScenario = async () => {
-    await withBusy(async () => {
-      const demo = await seedDemoData(30);
-      setWalletAddress(demo.primaryWallet);
-      setAckWallet(demo.primaryWallet);
-      setContacts((current) => current.length > 0 ? current : [
-        { ...EMPTY_CONTACT, id: 'contact-1' },
-        { ...EMPTY_CONTACT, id: 'contact-2' },
-      ]);
-      await loadAll(demo.primaryWallet);
-      setDashboardRefreshKey((current) => current + 1);
-      setMessage(`Loaded ${demo.summary.users} demo users, ${demo.summary.events} events, and ${demo.summary.contacts} contacts.`);
     });
   };
 
@@ -301,9 +285,6 @@ const SubmissionMvp = () => {
             Install Freighter, switch to Stellar Testnet, unlock extension, and approve this app when prompted.
           </p>
         </details>
-        <p className="muted" style={{ marginTop: '0.45rem', fontSize: '0.84rem' }}>
-          Fast start option: use Load 30+ Demo Users to explore the full flow without setup friction.
-        </p>
         <div className="wallet-row" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
           <button
             className="ghost"
@@ -315,9 +296,6 @@ const SubmissionMvp = () => {
           </button>
           <button className="primary" onClick={handleConnectWallet} disabled={isBusy} type="button">
             Connect Freighter Wallet
-          </button>
-          <button className="ghost" onClick={handleLoadDemoScenario} disabled={isBusy} type="button">
-            Load 30+ Demo Users
           </button>
           <span>{walletAddress ? shortenWallet(walletAddress) : 'No wallet connected'}</span>
         </div>

@@ -1,8 +1,6 @@
 import { createHash, randomUUID } from 'crypto';
 import sorobanService from '../../services/sorobanService.js';
-import { generateDemoScenario } from '../../services/demoDataService.js';
 import productionReadinessService from '../../services/productionReadinessService.js';
-import { config } from '../../config/env.js';
 
 const profiles = new Map();
 const trustedContacts = new Map();
@@ -26,60 +24,7 @@ function hashContext(value = '') {
     return createHash('sha256').update(value).digest('hex');
 }
 
-function clearApplicationState() {
-    profiles.clear();
-    trustedContacts.clear();
-    userEvents.clear();
-    eventsById.clear();
-    productionReadinessService.reset();
-}
-
-function seedStateFromScenario(scenario) {
-    clearApplicationState();
-
-    for (const profile of scenario.profiles) {
-        profiles.set(profile.walletAddress, { ...profile });
-    }
-
-    for (const [walletAddress, contacts] of Object.entries(scenario.contactsByWallet)) {
-        trustedContacts.set(walletAddress, contacts.map((contact) => ({ ...contact })));
-    }
-
-    for (const event of scenario.events) {
-        const walletEvents = getEventsForUser(event.walletAddress);
-        const normalizedEvent = {
-            ...event,
-            acknowledgments: event.acknowledgments.map((acknowledgment) => ({ ...acknowledgment }))
-        };
-
-        walletEvents.push(normalizedEvent);
-        eventsById.set(normalizedEvent.id, normalizedEvent);
-    }
-
-    productionReadinessService.seedDemoData(scenario);
-}
-
 export default async function rakshaRoutes(fastify) {
-    fastify.post('/seed-demo', async (request, reply) => {
-        if (config.nodeEnv === 'production' && !config.enableDemoSeed) {
-            return reply.code(403).send({
-                error: 'Forbidden',
-                message: 'Demo seeding is disabled in production'
-            });
-        }
-
-        const requestedUsers = Number(request.body?.users || request.query?.users || 30);
-        const scenario = generateDemoScenario(requestedUsers);
-        seedStateFromScenario(scenario);
-
-        return {
-            message: 'Demo data seeded successfully',
-            primaryWallet: scenario.primaryWallet,
-            summary: scenario.summary,
-            metrics: productionReadinessService.getMetrics()
-        };
-    });
-
     fastify.post('/profile', async (request, reply) => {
         const { walletAddress, name } = request.body || {};
 
