@@ -80,7 +80,7 @@ export const Contacts: React.FC = () => {
             <button
               onClick={handleAddContactRow}
               disabled={isBusy || !walletAddress}
-              className="inline-flex h-8 items-center gap-1.5 rounded border border-zinc-850 bg-zinc-900 px-3 text-xs text-zinc-300 hover:border-zinc-550 transition"
+              className="inline-flex h-8 items-center gap-1.5 rounded border border-zinc-800 bg-zinc-900 px-3 text-xs text-zinc-300 hover:border-zinc-500 transition"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Contact Row
@@ -88,14 +88,14 @@ export const Contacts: React.FC = () => {
           </div>
 
           {success && (
-            <div className="rounded border border-zinc-850 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
+            <div className="rounded border border-zinc-800 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-zinc-300" />
               <span>Emergency contacts list updated successfully.</span>
             </div>
           )}
 
           {error && (
-            <div className="rounded border border-zinc-850 bg-zinc-900 p-4 text-xs text-zinc-450 font-mono">
+            <div className="rounded border border-zinc-800 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
               {error}
             </div>
           )}

@@ -18,7 +18,7 @@ export const Home: React.FC = () => {
         {/* Banner Section */}
         <div className="border border-zinc-800 bg-zinc-950 p-6 sm:p-8 rounded-lg relative overflow-hidden">
           <div className="max-w-3xl">
-            <span className="text-[10px] tracking-widest font-mono text-zinc-550 uppercase block mb-2">
+            <span className="text-[10px] tracking-widest font-mono text-zinc-500 uppercase block mb-2">
               STELLAR EMERGENCY DISPATCH
             </span>
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-normal text-white mb-3">

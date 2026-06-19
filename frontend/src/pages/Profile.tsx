@@ -58,14 +58,14 @@ export const Profile: React.FC = () => {
           </div>
 
           {success && (
-            <div className="rounded border border-zinc-850 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
+            <div className="rounded border border-zinc-800 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-zinc-300" />
               <span>Identity profile registered and saved successfully.</span>
             </div>
           )}
 
           {error && (
-            <div className="rounded border border-zinc-850 bg-zinc-900 p-4 text-xs text-zinc-450 font-mono">
+            <div className="rounded border border-zinc-800 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
               {error}
             </div>
           )}

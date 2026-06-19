@@ -140,14 +140,14 @@ export const Sos: React.FC = () => {
             </div>
 
             {success && (
-              <div className="rounded border border-zinc-850 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
+              <div className="rounded border border-zinc-800 bg-zinc-900/20 p-4 text-xs text-zinc-300 flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-zinc-300" />
                 <span>SOS Alert successfully sent and dispatched. Responders notified.</span>
               </div>
             )}
 
             {error && (
-              <div className="rounded border border-zinc-850 bg-zinc-900 p-4 text-xs text-zinc-450 font-mono">
+              <div className="rounded border border-zinc-800 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
                 {error}
               </div>
             )}
@@ -192,7 +192,7 @@ export const Sos: React.FC = () => {
                   value={contextText}
                   onChange={(e) => setContextText(e.target.value)}
                   placeholder="Provide context for dispatch log hashing..."
-                  className="w-full min-h-[80px] rounded-md border border-zinc-850 bg-zinc-900 px-3 py-2 text-xs text-white focus:border-zinc-400 focus:outline-none placeholder:text-zinc-550 transition"
+                  className="w-full min-h-[80px] rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs text-white focus:border-zinc-400 focus:outline-none placeholder:text-zinc-500 transition"
                   disabled={isBusy}
                 />
               </div>
@@ -208,14 +208,14 @@ export const Sos: React.FC = () => {
               <div className="pt-4 border-t border-zinc-900 grid gap-2 grid-cols-2">
                 <button
                   onClick={handleTestAlertTone}
-                  className="inline-flex h-8 items-center justify-center gap-1.5 rounded border border-zinc-850 bg-zinc-900 px-3 text-xs text-zinc-350 hover:border-zinc-550 transition"
+                  className="inline-flex h-8 items-center justify-center gap-1.5 rounded border border-zinc-800 bg-zinc-900 px-3 text-xs text-zinc-300 hover:border-zinc-500 transition"
                 >
                   <Volume2 className="h-4 w-4" />
                   Test Alarm Sound
                 </button>
                 <a
                   href="tel:112"
-                  className="inline-flex h-8 items-center justify-center gap-1.5 rounded border border-zinc-850 bg-zinc-900 px-3 text-xs text-zinc-350 hover:border-zinc-550 transition"
+                  className="inline-flex h-8 items-center justify-center gap-1.5 rounded border border-zinc-800 bg-zinc-900 px-3 text-xs text-zinc-300 hover:border-zinc-500 transition"
                 >
                   <PhoneCall className="h-3.5 w-3.5" />
                   Call Emergency (112)
@@ -233,7 +233,7 @@ export const Sos: React.FC = () => {
               <button
                 onClick={handleRefreshHistory}
                 disabled={isBusy || !walletAddress}
-                className="p-2 rounded border border-zinc-850 text-zinc-400 hover:text-white transition"
+                className="p-2 rounded border border-zinc-800 text-zinc-400 hover:text-white transition"
                 title="Refresh logs"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${isBusy ? 'animate-spin' : ''}`} />
@@ -287,7 +287,7 @@ export const Sos: React.FC = () => {
                         <button
                           onClick={() => handleAcknowledge(item.id)}
                           disabled={isBusy}
-                          className="inline-flex h-6 items-center rounded border border-zinc-850 bg-zinc-900 px-2 text-[10px] font-medium text-zinc-300 hover:border-zinc-550 transition"
+                          className="inline-flex h-6 items-center rounded border border-zinc-800 bg-zinc-900 px-2 text-[10px] font-medium text-zinc-300 hover:border-zinc-500 transition"
                         >
                           Acknowledge
                         </button>

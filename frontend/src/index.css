@@ -52,10 +52,40 @@
   }
 }
 
+@layer components {
+  /* Ultra-clean custom form input classes */
+  .field-input {
+    @apply h-10 w-full rounded-md border border-zinc-800 bg-zinc-950 px-3 text-xs text-white placeholder:text-zinc-500 transition duration-150 ease-in-out focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  select.field-input {
+    @apply pr-8 appearance-none bg-no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+}
+
 @layer utilities {
   .glass-panel {
     @apply bg-zinc-900/50 border border-zinc-800;
   }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }
 
 section {

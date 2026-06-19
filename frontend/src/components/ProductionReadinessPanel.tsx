@@ -68,7 +68,7 @@ export default function ProductionReadinessPanel({ walletAddress, refreshToken =
         <button
           onClick={() => setManualRefreshCounter((current) => current + 1)}
           disabled={isLoading}
-          className="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-800 px-3 text-xs font-medium text-zinc-300 hover:border-zinc-550 transition"
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-800 px-3 text-xs font-medium text-zinc-300 hover:border-zinc-500 transition"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
           Refresh
@@ -76,7 +76,7 @@ export default function ProductionReadinessPanel({ walletAddress, refreshToken =
       </div>
 
       {error && (
-        <div className="rounded border border-zinc-850 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
+        <div className="rounded border border-zinc-800 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
           {error}
         </div>
       )}
@@ -182,7 +182,7 @@ export default function ProductionReadinessPanel({ walletAddress, refreshToken =
                   <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[9px] font-semibold font-mono uppercase tracking-wider border ${
                     item.status === 'complete'
                       ? 'border-zinc-800 text-zinc-300'
-                      : 'border-zinc-850 text-zinc-400'
+                      : 'border-zinc-800 text-zinc-400'
                   }`}>
                     {item.status}
                   </span>
