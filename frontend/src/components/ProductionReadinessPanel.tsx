@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getProductionReadiness, ProductionReadinessResponse } from '@/services/rakshaMvp';
+import { Activity, RefreshCw, CheckCircle, Shield } from 'lucide-react';
 
 type Props = {
   walletAddress?: string;
@@ -53,112 +54,144 @@ export default function ProductionReadinessPanel({ walletAddress, refreshToken =
   }, [loadReadiness, manualRefreshCounter, refreshToken]);
 
   return (
-    <section className="submission-card readiness-card">
-      <div className="card-heading-row">
-        <div>
-          <p className="eyebrow">Level 6</p>
-          <h2>Production Readiness</h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded bg-zinc-900 border border-zinc-800 text-white">
+            <Activity className="h-4.5 w-4.5" />
+          </div>
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-white font-mono">Live Node Metrics</h2>
+            <p className="text-[10px] text-zinc-500 font-mono">Indexing rates and security status updates.</p>
+          </div>
         </div>
-        <button className="ghost" type="button" onClick={() => setManualRefreshCounter((current) => current + 1)}>
-          Refresh dashboard
+        <button
+          onClick={() => setManualRefreshCounter((current) => current + 1)}
+          disabled={isLoading}
+          className="inline-flex h-9 items-center gap-2 rounded-md border border-zinc-800 px-3 text-xs font-medium text-zinc-300 hover:border-zinc-550 transition"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+          Refresh
         </button>
       </div>
 
-      <p className="muted">
-        Live signals for production readiness: metrics, monitoring, indexed data, and security coverage.
-        {walletAddress ? ` Current wallet: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-6)}.` : ''}
-      </p>
-
-      {isLoading && <p className="muted">Loading live metrics...</p>}
-      {error && <p className="status-text">{error}</p>}
-
-      {readiness && (
-        <div className="readiness-stack">
-          <div className="metric-grid">
-            <article className="metric-card">
-              <span>Verified users</span>
-              <strong>{formatNumber(readiness.metrics.verifiedUsers)}</strong>
-              <small>Wallet-backed profiles indexed</small>
-            </article>
-            <article className="metric-card">
-              <span>DAU</span>
-              <strong>{formatNumber(readiness.metrics.activeUsers24h)}</strong>
-              <small>Active in the last 24 hours</small>
-            </article>
-            <article className="metric-card">
-              <span>30-day retention</span>
-              <strong>{readiness.metrics.retentionRate30d}%</strong>
-              <small>Users with activity in the last 30 days</small>
-            </article>
-            <article className="metric-card">
-              <span>Transactions</span>
-              <strong>{formatNumber(readiness.metrics.transactions)}</strong>
-              <small>Profiles, contacts, SOS, and acknowledgments</small>
-            </article>
-          </div>
-
-          <div className="readiness-columns">
-            <article className="mini-panel">
-              <h3>Monitoring</h3>
-              <p className="muted">Status: <strong>{readiness.monitoring.status}</strong></p>
-              <p className="muted">Uptime: {formatDuration(readiness.monitoring.uptimeSeconds)}</p>
-              <p className="muted">Node: {readiness.monitoring.nodeVersion}</p>
-              <p className="muted">
-                Memory: {readiness.monitoring.memoryUsageMb.heapUsedMb} MB used / {readiness.monitoring.memoryUsageMb.heapTotalMb} MB total
-              </p>
-              <p className="muted">Logging: {readiness.monitoring.logging}</p>
-              <p className="muted">Rate limiting: {readiness.monitoring.rateLimit}</p>
-              <p className="muted">
-                Soroban: {String(readiness.monitoring.soroban.status || readiness.monitoring.soroban.isConfigured || 'unknown')}
-              </p>
-            </article>
-
-            <article className="mini-panel">
-              <h3>Data Indexing</h3>
-              <p className="muted">Profiles indexed: {formatNumber(readiness.indexing.totalProfilesIndexed)}</p>
-              <p className="muted">Contacts indexed: {formatNumber(readiness.indexing.totalContactsIndexed)}</p>
-              <p className="muted">Events indexed: {formatNumber(readiness.indexing.totalEventsIndexed)}</p>
-              <p className="muted">Indexed records: {formatNumber(readiness.metrics.indexedRecords)}</p>
-              <div className="endpoint-list">
-                {readiness.indexing.searchEndpoints.map((endpoint) => (
-                  <code key={endpoint} className="endpoint-pill">{endpoint}</code>
-                ))}
-              </div>
-            </article>
-          </div>
-
-          <article className="mini-panel">
-            <h3>Security Checklist</h3>
-            <div className="checklist-list">
-              {readiness.securityChecklist.map((item) => (
-                <div key={item.item} className={`checklist-item ${item.status}`}>
-                  <div>
-                    <strong>{item.item}</strong>
-                    <p className="muted">{item.evidence}</p>
-                  </div>
-                  <span>{item.status === 'complete' ? 'Complete' : 'Review'}</span>
-                </div>
-              ))}
-            </div>
-          </article>
-
-          <article className="mini-panel">
-            <h3>Live Index Feed</h3>
-            <div className="events-list">
-              {readiness.indexing.recentEvents.length === 0 && <p className="muted">No indexed events yet.</p>}
-              {readiness.indexing.recentEvents.map((event) => (
-                <div key={event.id} className="event-card compact-event-card">
-                  <p>
-                    <strong>{event.eventType}</strong> · {new Date(event.timestamp).toLocaleString()}
-                  </p>
-                  <p className="muted">Wallet: {event.walletAddress}</p>
-                  <p className="muted">Status: {event.status} · Acks: {event.acknowledgments}</p>
-                </div>
-              ))}
-            </div>
-          </article>
+      {error && (
+        <div className="rounded border border-zinc-850 bg-zinc-900 p-4 text-xs text-zinc-400 font-mono">
+          {error}
         </div>
       )}
-    </section>
+
+      {readiness && (
+        <div className="space-y-6">
+          {/* Key Metrics Grid */}
+          <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-4 font-mono">
+              <span className="text-[9px] text-zinc-500 uppercase block">Verified Users</span>
+              <strong className="text-xl font-bold text-white mt-1 block">{formatNumber(readiness.metrics.verifiedUsers)}</strong>
+              <small className="text-[9px] text-zinc-500 block mt-1">WALLET PROFILE INDEX</small>
+            </div>
+            <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-4 font-mono">
+              <span className="text-[9px] text-zinc-500 uppercase block">DAU (24H)</span>
+              <strong className="text-xl font-bold text-white mt-1 block">{formatNumber(readiness.metrics.activeUsers24h)}</strong>
+              <small className="text-[9px] text-zinc-500 block mt-1">ACTIVE WALLETS</small>
+            </div>
+            <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-4 font-mono">
+              <span className="text-[9px] text-zinc-500 uppercase block">30D RETENTION</span>
+              <strong className="text-xl font-bold text-white mt-1 block">{readiness.metrics.retentionRate30d}%</strong>
+              <small className="text-[9px] text-zinc-500 block mt-1">RETENTION FREQUENCY</small>
+            </div>
+            <div className="rounded-lg border border-zinc-900 bg-zinc-950 p-4 font-mono">
+              <span className="text-[9px] text-zinc-500 uppercase block">TRANSACTIONS</span>
+              <strong className="text-xl font-bold text-white mt-1 block">{formatNumber(readiness.metrics.transactions)}</strong>
+              <small className="text-[9px] text-zinc-500 block mt-1">TOTAL ACTIONS LOGGED</small>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* System details */}
+            <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-5 space-y-4">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white font-mono border-b border-zinc-900 pb-2">
+                Operational Status
+              </h3>
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">SYSTEM STATUS</span>
+                  <span className="text-zinc-200">{readiness.monitoring.status}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">UPTIME</span>
+                  <span className="text-zinc-200">{formatDuration(readiness.monitoring.uptimeSeconds)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">NODE RUNTIME</span>
+                  <span className="text-zinc-200">{readiness.monitoring.nodeVersion}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">HEAP MEMORY</span>
+                  <span className="text-zinc-200">
+                    {readiness.monitoring.memoryUsageMb.heapUsedMb} MB / {readiness.monitoring.memoryUsageMb.heapTotalMb} MB
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">SOROBAN LINK</span>
+                  <span className="text-zinc-200">
+                    {String(readiness.monitoring.soroban.status || readiness.monitoring.soroban.isConfigured || 'unknown')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Index summary */}
+            <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-5 space-y-4">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-white font-mono border-b border-zinc-900 pb-2">
+                Data Index Database
+              </h3>
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">PROFILES INDEXED</span>
+                  <span className="text-zinc-200">{formatNumber(readiness.indexing.totalProfilesIndexed)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">CONTACTS INDEXED</span>
+                  <span className="text-zinc-200">{formatNumber(readiness.indexing.totalContactsIndexed)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">EVENTS INDEXED</span>
+                  <span className="text-zinc-200">{formatNumber(readiness.indexing.totalEventsIndexed)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-505">TOTAL RECORDS</span>
+                  <span className="text-zinc-200">{formatNumber(readiness.metrics.indexedRecords)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Security checklist */}
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-5 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-white font-mono border-b border-zinc-900 pb-2">
+              Security Integrity Checklist
+            </h3>
+            <div className="space-y-3">
+              {readiness.securityChecklist.map((item) => (
+                <div key={item.item} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-zinc-900 rounded p-3 bg-zinc-950">
+                  <div>
+                    <span className="font-semibold text-xs text-white block">{item.item}</span>
+                    <span className="text-[10px] text-zinc-500 font-mono mt-0.5 block">{item.evidence}</span>
+                  </div>
+                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[9px] font-semibold font-mono uppercase tracking-wider border ${
+                    item.status === 'complete'
+                      ? 'border-zinc-800 text-zinc-300'
+                      : 'border-zinc-850 text-zinc-400'
+                  }`}>
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
